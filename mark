@@ -1,0 +1,203 @@
+测试网址：
+http://127.0.0.1:8000/pallasdata
+
+截图：
+gnome-screenshot -a
+
+
+启动sublime命令：
+LD_PRELOAD=./libsublime-imfix.so subl
+
+开始就要开启服务，只要修改内容就要重启：
+1.打开ui终端：
+./stop.sh
+./start.sh
+2.开启start.sh后，打开backend终端:
+cd spark
+docker-compose stop;docker-compose rm -f;docker-compose build;docker-compose up -d;
+
+启动xampp:
+sudo /opt/lampp/./manager-linux-x64.run
+
+Git Cola:
+缓存->提交
+操作->拉取  目的是更新
+操作->上传
+重启服务
+
+
+docker:
+启动:docker-compose up -d
+查看运行状况:docker-compose  ps
+获得所有可用信息:docker-compose [COMMOND] --help
+	build:创建或者再建服务
+	重建:docker-compose build
+
+	help:显示命令的帮助和使用信息
+
+	kill:强制停止运行的容器
+	docker-compose kill -s SIGKINT
+
+	logs:显示服务的日志输出
+
+	port:为端口绑定输出公共信息
+
+	ps:显示容器
+
+	rm:删除停止的容器
+
+	run:在服务上运行一个一次性命令:
+	docker-compose run web Python manage.py shell
+
+	start:启动已存在的容器作为一个服务
+
+	stop:停止运行的容器而不删除它们
+	可以使用docker-compose start重新运行起来
+
+
+	up:为一个服务搭建,创建,启动,附加到容器
+	docker-compose up会集中每个容器的输出,存在时所有容器会停止
+	docker-compose up -d在后台启动容器并运行
+	
+	
+
+
+
+
+流程：
+1.结构：
+	projects->uicloud->主要文件dashboard/dataCollection/statements/uicloud
+	在这4个文件下分别对应包含:
+		static->css/img/js
+		templates/html
+	即:
+	dashboard/migrations
+			 /static/dashboard/css
+			 	               /js
+			 	               /img
+			 /templates/dashboard/.html
+	dataCollection/DataModels
+				  /static/dataCollection/css
+				  						/font
+				  						/img
+				  						/js
+				  /templates/dataCollection/.html
+	statements/migrations
+			  /static/statements/css
+			  					/js
+			  					/img
+			  /templates/statements/.html
+	uicloud/static/css
+				  /js
+				  /img
+		   /templates/admin/,html
+		   			 /common/.html
+2.执行顺序：
+	获取setting.py中的配置，包括url映射的文件路径.
+	ROOT_URLCONF = 'uicloud.urls'
+3.响应顺序：
+	 (1)浏览器提交请求
+	 (2)服务器端根据url在urls.py中进行匹配，找到对应视图函数。 
+		即url(r"^pallasdata$",views.IndexView.as_view())
+	 (3)调用对应的视图函数,返回一个HttpRespons对象.
+	 (4)django转换HttpRespons对象为一个合适的Http response，并返回给页面进行显示.
+
+
+
+		
+
+this.$el.html():
+$el:指的是选中的真正的dom元素，而$()选择的是一个元素组，需要.get(0)或者[0]才能获取到真正的dom.
+get:取得其中一个匹配的元素，$(this).get(0) <==> $(this)[0];
+eq(index):返回的是jquery对象。
+$("#xx"):获取得到一个对象。
+$("#xx")[0]:得到一个标签。
+
+eg:
+<div class="lists">
+	<select name="" id="" class="sel">
+		<option value="a"></option>
+		<option value="b"></option>
+	</select>
+</div>
+获取value并判断与某个值是否相等:  value-变量需要+，字符串不需要
+$(".lists .sel option[value="+值+"]");
+eg:
+	if($(".lists .combo-select .custom-select option[value="+end+"]").length == 0){
+	  var selectoption = $("<option value="+end+">"+end+"</option>");
+	  listselect.append(selectoption);
+	  listselect.comboSelect();
+	}
+
+
+/:根目录
+./:当前目录
+../:父级目录
+
+
+eg: display:block !important;
+
+
+class名字符串拼接变量：
+var p = $("<p class=p"+j+">" + aMeasure +"</p>");
+class:.p0  .p1 ...
+
+设置默认值和恢复默认值：
+$(document).ready(function() {  
+        var vdefault = $('#keyword').val();  
+  
+    $('#keyword').focus(function() {  
+            //获得焦点时，如果值为默认值，则设置为空  
+            if ($(this).val() == vdefault) {  
+                $(this).val("");  
+            }  
+        });  
+    $('#keyword').blur(function() {  
+            //失去焦点时，如果值为空，则设置为默认值  
+            if ($(this).val()== "") {  
+                $(this).val(vdefault); ;  
+            }  
+        });  
+});  
+
+position():获取匹配元素相对父元素的偏移
+offset():获取匹配元素在当前视口的相对偏移
+unbind():移除被选元素的事件处理程序
+data():向被选元素附加数据，或者向被选元素获取数据
+	在元素上存放或读取数据,返回jQuery对象
+indexOf:没有返回-1
+写事件前先解绑，目的是防止多次绑定，重复执行。
+
+
+ var selectoption = $("<option value="+dbVal+">"+dbVal+"</option>");
+
+ toFixed它是一个四舍六入五成双的诡异的方法，"四舍六入五成双"含义：对于位数很多的近似数，当有效位数确定后，其后面多余的数字应该舍去，只保留有效数字最末一位，这种修约（舍入）规则是“四舍六入五成双”，也即“4舍6入5凑偶”这里“四”是指≤4 时舍去，"六"是指≥6时进上，"五"指的是根据5后面的数字来定，当5后有数时，舍5入1；当5后无有效数字时，需要分两种情况来讲：①5前为奇数，舍5入1；②5前为偶数，舍5不进。（0是偶数）
+
+
+ 雷达图多数据堆叠问题：
+ 修改了echarts.js文件，使得移入的时候只显示一条数据，隔两个显示一个，不显示的是将其置空的。对于移入也为空，需要提前将值存入数组中，然后判断name为空时赋值数组内容。
+ name:{
+	formatter:function(params){
+		count++;		
+		if(data.length > 20){
+			if(count % 3 == 0){
+				return params;
+			}else{
+				array.push(params);
+			//	console.log(array);
+				return '';
+			}
+		}else{
+			return params;
+		}
+	}
+},	
+
+for(var m=0;m<indicatorAxes.length;m++){
+	if(indicatorAxes[m].name == ''){
+		count++;
+	   	for(var n=0;n<count;n++){
+	   		indicatorAxes[m].name = array[n];
+	   	}		
+	}
+}
