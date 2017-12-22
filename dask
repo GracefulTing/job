@@ -1,0 +1,103 @@
+解决问题:
+1.隐藏连接具体信息窗口以及筛选器窗口   nav_base.js:452
+
+连接具体信息窗口:$("#connectDataBaseInfo").hide(); 
+筛选器窗口:$("#user-filter-select").hide();
+
+2.实现按下回车跳转页面   dataSourceSelect.js:37
+提取一个公共函数，实现点击登录以及按下回车后调用detail函数,然后跳转页面.
+
+3.重置按钮  filter-common-handle.js:248
+清空内容
+
+4.构建数据新建和覆盖相关问题  dataAnalysis.js:1348
+
+5.指标卡
+
+6.仪表板和视图的间距、显示、坐标轴问题以及优化
+
+7.智能筛选的取消，重置按钮   filter-common-handle.js:406
+
+8.常规弹框,视图的搜索  filter-common-handle.js:948　  statements.js:421
+
+9.指标卡同环比 table.js  dashboard.js:1790  dashboard.css
+
+10.重构问题  dataAnalysis.js:1515
+
+11.图表优化
+<!-- 分组：
+	// if(all_dimensionality[dimensionality_show_data_arr.length - 1] != all_dimensionality[dimensionality_i]){
+	// 	dimensionality_show_data_arr[dimensionality_i].push("YZYPD" + aData[aDimensionality]);
+	// }else{
+	// 	dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+	// }
+	// if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+	// 	dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+	// }else{
+	// 	dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+	// }
+	chartHandle.js : 2323-2327 条形图   2049-2053,2082,2073,2074柱状图  932-940,951 折线图  1588,1610,1613,1611堆积条形图  
+	state_chartHandle.js:2413-2417 条形图   2146-2150,2172,2164,2165 柱状图  990,1010 折线图  1657,1679,1682,1683 堆积条形图  -->
+	１．重新分组：
+	chartHandle.js: 条形图 2347-2360  柱状图 2063-2076 折线图 941-954
+	state_chartHandle.js: 条形图 2440-2453 柱状图 2154-2167 折线图 1000-1013 
+	２．间距：chartHandle.js :2388 条形图
+	３．颜色：chartSetting.js 默认，轻快，自然
+
+	４．datazoom:
+	chartHandle.js: 
+	瀑布图 63 73 158-160  165   123 124 167  153-156
+	饼图 251 307 316
+	面积图 368 410 430 431 450-452 457 459   445-448
+	甘特图 546 557 637 638 645-647 652 658
+	折线图 825 886 1028-1030 1035 1037 995 996
+	对比条形图 1096 1107 1163 1171 1178 1299-1301 1312 1306
+	堆积柱状图 1469 1480 1708 1709 1750 1751 1772-1774 1778 1780 1802-1804 1809 1815
+	关系图 1924 1935 
+	柱状图 2164 2215 2269 2278-2280 2285 2287
+	雷达图 2714 2755-2757 2773 2760 2714-2715 2732 2733 2774-2778
+	条形图 backgroundColor:"#f5f5f5",filterColor:"#eeeeee", borderColor:"#f5f5f5",bottom:0,handleStyle:{color:"#eeeeee"}  2475 2523 2579
+
+	state_chartHandle.js"
+	瀑布图 69 163-165 170 172 130-131 150-153
+	饼图 271 327 336 
+	面积图 404 446 466-467 487-489 494 496 471-474
+	甘特图 595 606 686-687 694-696 707 701 
+	折线图 886 947 1078-1080 1087 952 1042 973-975 1051
+	对比条形图 1165 1154 1220 1227 1233 1354-1356 1361 1367
+	堆积柱状图 1535 1546 1772-1773 1813 1834-1836 1841 1843 1864-1866 1871 1876
+	关系图 1998 2009 
+	柱状图 2235 2286 2340 2349-2351 2356 2358 
+	雷达图 2754-2755 2796-2802
+	条形图 2540  2585 2639 2663-2665 2670 2675
+
+	５．比例：statement.js :184 185 191 192
+
+	６．选中状态 
+	switch_chart.js:61 67 72 295-297 299 210 216 58-59
+	dashboard.js:3493-3495 3518-3523
+	dashboard.css:398 
+
+	７．树状图调整:1913-1917 有待调节
+
+	8.雷达图多数据问题
+
+	9.视图区域调整:不显示数据以及位置的调节
+	瀑布图:223 
+	饼图：350
+	面积图:543
+	甘特图:759
+	折线图:1085
+	对比条形图:1423
+	堆积柱状图:
+	关系图:2020
+	柱状图:2208
+	条形图:2513
+
+	10.关系图视图问题
+	
+
+
+
+
+
