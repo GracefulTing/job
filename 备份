@@ -1,0 +1,365 @@
+<div id="statements_left_search">
+	<img src={% static "images/contentFilter/search.png" %} alt="搜索">
+</div>
+statements.html : 与搜索图标父级同级
+<!-- 搜索功能 -->
+<div class="view_search clear">
+	<div class="view_search_img">
+		<img src={% static "dashboard/img/search.png" %} alt="search">
+	</div>
+	<input type="text" placeholder="请输入查询的字段" class="view_search_input">
+</div>
+
+statements.css : 最后
+<!-- 搜索 -->
+#pageStatementsModule #statements_left_bar .view_search{width: 173px;height: 21px;border: 1px solid #DEDEDE;border-radius: 11.5px;line-height: 21px;position: relative;left:12.5px;display: none;}
+#pageStatementsModule #statements_left_bar .view_search .view_search_img{width: 23px;height: 23px;vertical-align: middle;box-sizing: border-box;line-height: 23px;border-right: none;border-top-left-radius: 11.5px;border-bottom-left-radius: 11.5px;}
+#pageStatementsModule #statements_left_bar .view_search .view_search_img img{width: 12px;height: 11px;float: left;margin: 6px 0px 0px 6px;cursor: pointer;}
+#pageStatementsModule #statements_left_bar .view_search .view_search_input{position:absolute;height: 22px;top: 0;left: 23px;width:150px;border-top-right-radius: 11.5px;border-bottom-right-radius: 11.5px;}
+
+statements.js :241
+function mdHandleFun(){
+		//搜索功能
+			$("#pageStatementsModule #statements_left_bar #state_left_bar_title #statements_left_search").click(function(event){
+				event.stopPropagation();
+				if($(this).parents("#statements_left_bar").find(".view_search").css("display") == "block"){
+					$(this).parents("#statements_left_bar").find(".view_search").hide(300);
+
+					$(this).parents("#statements_left_bar").find(".viewTableShow").animate({
+						"height":$(this).parents("#statements_left_bar").height() - 32 + "px",
+					},300);
+
+				}else{
+					$(this).parents("#statements_left_bar").find(".view_search_input").focus();
+					$(this).parents("#statements_left_bar").find(".view_search").show(300);
+					$(this).parents("#statements_left_bar").find(".viewTableShow").stop(true).animate({
+						"height":$(this).parents("#statements_left_bar").height() - 22 - 32 + "px",
+					},300);
+				}
+			})
+			Search($("#pageStatementsModule #statements_left_bar .view_search .view_search_input"),"view_show_name_save",$("#pageStatementsModule #statements_left_bar #statements_left_bar_area"));
+		}
+		mdHandleFun();
+
+		function Search(ele,activeClass,showContent){
+			$("#pageStatementsModule #statements_left_bar .view_search .view_search_input").val('');
+		    //报表弹窗筛选功能
+		  $(ele).on("input",function(){
+		    //搜索里输入的值
+		    var search_input_data  = $(ele).val();
+
+		    if(search_input_data != ""){
+      			$(showContent).children().css("display","none");
+
+		      	var reg_str = "/"+search_input_data+"/gi";
+
+		      	var list_p=$(showContent).find("."+activeClass+"");
+
+			    for(var i = 0 ; i < list_p.length;i++){
+
+			    	var reg = eval(reg_str);
+
+			      (function(index){
+			        var list_li_text = list_p.eq(index).text();
+			        if(reg.test(list_li_text) == true){
+			          	list_p.eq(index).parent().parent().css("display","block");
+			        }
+			      })(i);
+
+			    }
+		    }else{
+      			$(showContent).children().css("display","block");
+		    }
+		  })
+		}
+
+
+label换行：aY
+interval: 0,//标签设置为全部显示
+formatter:function(params){
+	//粘贴以下function内未注释的代码
+	    var newParamsName = "";// 最终拼接成的字符串
+	    var paramsNameNumber = params.length;// 实际标签的个数
+	    var provideNumber = 4;// 每行能显示的字的个数
+	    var rowNumber = Math.ceil(paramsNameNumber / provideNumber);// 换行的话，需要显示几行，向上取整
+	    /**
+	     * 判断标签的个数是否大于规定的个数， 如果大于，则进行换行处理 如果不大于，即等于或小于，就返回原标签
+	     */
+	    // 条件等同于rowNumber>1
+	    if (paramsNameNumber > provideNumber) {
+	        /** 循环每一行,p表示行 */
+	        for (var p = 0; p < rowNumber; p++) {
+	            var tempStr = "";// 表示每一次截取的字符串
+	            var start = p * provideNumber;// 开始截取的位置
+	            var end = start + provideNumber;// 结束截取的位置
+	            // 此处特殊处理最后一行的索引值
+	            if (p == rowNumber - 1) {
+	                // 最后一次不换行
+	                tempStr = params.substring(start, paramsNameNumber);
+	            } else {
+	                // 每一次拼接字符串并换行
+	                tempStr = params.substring(start, end) + "\n";
+	            }
+	            newParamsName += tempStr;// 最终拼成的字符串
+	        }
+
+	    } else {
+	        // 将旧标签的值赋给新标签
+	        newParamsName = params;
+	    }
+	    //将最终的字符串返回
+	    return newParamsName
+}
+
+
+chartHandle.js : 2364:
+// interval:function(index,value){
+// 	if(all_dimensionality[dimensionality_show_data.length - 1] != "state"){
+// 		return !/YZYPD/.test(value);
+// 	}else{
+// 		//return value;
+// 		if(/^YZYPD/.test(value)){
+// 			// return value.split("YZYPD")[1];
+// 			return value.replace("YZYPD","");
+// 		}else{
+// 			return value;
+// 		}
+// 	}
+// },
+
+
+条形图分组问题：
+三维及多维：
+String [][] a = {{"亚洲"，"非洲","美洲"},{"中国"，"利比亚"，"美国"},{"上海","不清楚","洛杉矶"}};
+String [][] b = new String[a[0].length][a.length];
+for(int i=0;i<a.length;i++){
+	for(int j=0;j<a[i].length;j++){
+		b[j][i] = a[i][j];
+	}
+}
+for(int i=0;i<b.length;i++){
+	for(j=0;j<b[i].length;j++){
+		system.out.println(b[i][j] + "-");
+	}
+	system.out.println("\t");
+}
+
+
+二维：
+String [][] a = {{"a","b"},{"a2","b3"}};
+for(int i=0;i<a.length - 1;i++){
+	for(int j=0;j<a[i].length;j++){
+		System.out.println(a[i][j]+"-"+a[i+1][j]);
+	}
+}
+
+
+关系图：
+// function qc(arr){
+//  	var res = [arr[0]];
+//  	for(var i = 1; i < arr.length; i++){
+//   		var repeat = false;
+//   		for(var j = 0; j < res.length; j++){
+//    			if(arr[i] == res[j]){
+//     			repeat = true;
+//     			break;
+//    			}
+//   		}
+//   		if(!repeat){
+//    			res.push(arr[i]);
+//   		}
+//  	}
+//  	return res;
+// }
+// // console.log(arr);
+// tempArr = qc(arr);
+// console.log(tempArr);
+// for(var t=0;t<tempArr.length;t++){
+// 	str = tempArr[t];
+// 	var aNode = {
+// 		"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]]/allValueUnitDict[valueUnitValue_arr[storeNum_toview]],
+// 		"originValue":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],
+// 		// "name":name,
+// 		"name":str,
+// 		"fixed":false,
+// 		"draggable":true,
+// 		"category":categorys.hasObject("name",aData[need_dimensionality[0]]),
+// 		// "dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},
+// 		"dirllInfo":{"currentField":all_dimensionality[index],"currentValue":aData[all_dimensionality[index]]},
+// 		"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],
+// 		"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],
+// 		"viewtype":"relational",
+// 		label:{
+// 			normal:
+// 			{
+// 				// show:false,
+// 				show:need_dimensionality.length < 25,
+// 				formatter:function(params){
+// 					// console.log(params);
+// 					var names = params["name"].split("_YZYPD_");
+// 					var needValue = params.value;
+// 					  if(normalUnitValue_arr[storeNum_toview] != -1){
+// 	  	 				needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
+// 					  }
+// 					return names[names.length - 2]+":"+needValue;
+// 				}
+// 			}
+// 		}
+// 	}
+// 	console.log(aNode)
+// 	need_all_nodes.push(aNode);
+// }
+
+
+var s = new Set();
+s.add(name);
+console.log(s);
+// console.log(s.size);
+s.forEach(function (element, sameElement, s) {
+	str = element;
+	// console.log(element);
+});
+
+
+// str += aData[need_dimensionality[0]] + "_YZYPD_";
+// for(var a=1;a<arr.length;a++){
+// 	if(str != arr[a]){
+// 		str = arr[a];
+// 	}
+// }
+
+
+// if(arr[arr.length-1] != name){
+// 	arr.push(name);
+// 	// console.log(arr);
+// 	for(var l=0;l<arr.length;l++){
+// 		str = arr[l];
+// 	}
+// 	// console.log(str);
+// }
+
+
+// if(arr[arr.length-1] != name){
+// 	arr.push(name);
+// 	// console.log(arr);
+// 	for(var l=0;l<arr.length;l++){
+// 		if(tempArr.indexOf(arr[l]) == -1){
+// 			tempArr.push(arr[l]);
+// 		}else{
+// 			arr[l] = "";
+// 			tempArr.push(arr[l]);
+// 		}
+// 		for(var t=0;t<tempArr.length;t++){
+// 			str = tempArr[t];
+// 		}									
+// 	}
+// 	// console.log(str);
+// }
+
+
+// console.log(arr);
+// arr.sort();
+// for(var l=0;l<arr.length;l++){
+// 	if(arr[l] == arr[l+1]){
+// 		arr.splice(l,1,"repeat");
+// 	}
+// }
+// console.log(arr);
+
+条形图分组：
+3028:
+// for(var a=0;a<series[0].data.length;a++){
+// 	var dataArr = series[0].data[a].theDimeInfo;
+// 	// console.log(dataArr);
+// 	var last = tempArr[tempArr.length-1];
+// 	if(/^YZYPD/.test(last)){
+// 		last = last.split("YZYPD")[1];
+// 	}
+// 	if(last != dataArr[0]){
+// 		tempArr.push(dataArr[0]);
+// 	}else{
+// 		tempArr.push("YZYPD" + dataArr[0]);
+// 	}
+// 	// console.log(tempArr);
+// 	var s = "";
+// 	for(var d=0;d<dataArr.length;d++){
+// 		s += dataArr[d] + "-";
+// 		var sVal = s.substring(0,s.length-1);
+// 	}
+// 	// console.log(sVal);
+// 	var prev = sVal.split("-")[0];
+// 	for(var t=0;t<tempArr.length;t++){
+// 		prev = tempArr[t];
+// 	}
+// 	// console.log(prev);
+// 	var rs = prev + "-" + sVal.split("-")[1];
+// 	// console.log(rs);
+
+// 	// var valueArr = rs.split("-");
+// 	// dataArr = valueArr;
+// 	// // console.log(dataArr);
+// 	// for(var v=0;v<dataArr.length;v++){
+// 	// 	if(/^YZYPD/.test(dataArr[v])){
+// 	// 		aY["axisTick"].length = 0;
+// 	// 	}else{
+// 	// 		aY["axisTick"].length = 80 * v + i;
+// 	// 	}
+// 	// }
+
+// 	var ss = "YZYPD";
+// 	var index = rs.indexOf(ss);
+// 	// console.log(index);
+// 	if(index == -1){
+// 		aY["axisTick"].length = 160;
+// 		console.log(aY["axisTick"].length);
+// 	}else{
+// 		aY["axisTick"].length = 0;
+// 		console.log(aY["axisTick"].length);
+// 	}
+
+// 	// if(/^YZYPD/.test(prev) && !/YZYPD/.test(sVal.split("-")[1])){
+// 	// 	aY["axisTick"].length = 0;
+// 	// }else{
+// 	// 	aY["axisTick"].length = 160 + i;
+// 	// }
+	
+// }
+
+2965:
+// var s = "";
+// var ss = "";
+// var saveArr = [];
+// for(j=0;j<dimensionality_show_data.length-1;j++){
+// 	for(var k=0;k<dimensionality_show_data[j].length;k++){
+// 		s = dimensionality_show_data[j][k] + "-" + dimensionality_show_data[j+1][k];
+// 		// console.log(dimensionality_show_data[j][k] + "-" + dimensionality_show_data[j+1][k]);
+// 		// console.log(s);	
+// 		saveArr.push(s);
+// 	}
+// }
+// //console.log(saveArr);
+// for(var s=0;s<saveArr.length;s++){
+// 	ss = saveArr[s];
+// 	console.log(ss);
+// 	var tar = "YZYPD";
+// 	var index = ss.indexOf(tar);
+// 	if(index == -1){
+// 		aY["axisTick"].length = 160;
+// 	}else{
+// 		aY["axisTick"].length = 0;
+// 	}
+// }
+
+条形图刻度最大长度:2631
+// var arr = [];
+// for(var j = 0;j < dimensionality_show_data[i].length; j ++){
+// 	// arr.push(dimensionality_show_data[i][j].length);
+// 	var dataLen = dimensionality_show_data[i][j];
+// 	if(dataLen){
+// 		if(/YZYPD/.test(dataLen)){
+// 			dataLen = dataLen.split("YZYPD")[1];
+// 		}
+// 		arr.push(dataLen.length);
+// 	}
+// }
+// var maxLength = Math.max.apply(null, arr);
