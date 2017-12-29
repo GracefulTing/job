@@ -1,0 +1,116 @@
+<!-- 
+１．雷达图多数据间隔显示清晰以及移入显示单条数据问题:(改动较大，改动了原echarts.js:3.7.1版本)
+（１）显示:
+	indicator:指示器,用来指定多个变量或者多个维度
+	indicator.name:指示器名称
+	在option下radar对name进行设置：
+		 radar: [{
+			        indicator:indicator,
+			        triggerEvent:true,
+		         	name:{
+		         		formatter:function(params){
+		         			count++;		
+		         			if(data.length > 20){
+		         				if(count % 3 == 0){
+		         					return params;
+		         				}else{
+		         					array.push(params);
+		         					return '';
+		         				}
+		         			}else{
+		         				return params;
+		         			}
+		         		}
+		         	},	
+			}],
+(2)移入：
+tooltip——trigger:"axis"
+主要添加函数：getAngle()以及getIndexToDisplay()
+将移入要显示的样式写js里formatTooltip_new:
+因为name是前后对应的,如果显示为空，移入则为空或者undefined；因此，将置空的数据存入数组，在移入需要数据的时候从数组中取出赋值。
+for(var m=0;m<indicatorAxes.length;m++){
+	if(indicatorAxes[m].name == ''){
+		count++;
+	   	for(var n=0;n<count;n++){
+	   		indicatorAxes[m].name = array[n];
+	   	}		
+	}
+}
+
+２．关系图报错"dataIndex undefined" ,有重复节点
+借助数组将要存入aNode的节点名称和数组的最后一个元素进行比较，没有则加入数组，即避免了重复。然后赋值字符串str赋值给aNode的name，最后在aNode->name不为空时将aNode插入need_all_nodes;
+if(arr[arr.length-1] != name){
+	arr.push(name);
+	// console.log(arr);
+	for(var l=0;l<arr.length;l++){
+		str = arr[l];
+	}
+	// console.log(str);
+}
+if(aNode["name"] != ""){
+	need_all_nodes.push(aNode);
+}
+
+3.图形分组(数据分组，但是显示清晰加线未合理展示)
+（１）调节多轴间距
+	尝试过刻度名最大长度适应，表达式未解决全部情况，只适用一部分。最终限定长度,超过显示...
+	y轴axisLabel
+			formatter:function(value){
+							if(value.length > 3){
+								value = value.substring(0,3) + '...';
+							}
+							return value;
+					}
+(2)分组：
+	边框——axisLine,axisTick中length
+	数据——如果没有数据赋值,否则找已经插入的数据，如果没有找到直接插入，找到就进行比较。判断当前轴是否是最后一个维度,然后进行比较，最后一个元素和下一个插入的相等,则加前缀，否则直接加入。因为有前缀，下次比较会受干扰，正则判断是否含有前缀并截取。
+	var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
+	for(var k = 0;k < dimension_length;k++){
+		if(!dimensionality_show_data[k]){				
+			dimensionality_show_data[k] = [aData[all_dimensionality[k]]];
+		}else{
+			var index = dimensionality_show_data[k].indexOf(aData[all_dimensionality[k]]);
+			if(index == -1){
+				dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+			}else if(index != -1){
+				if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+					var lastVal = dimensionality_show_data[k][dimensionality_show_data[k].length-1];
+					if(/YZYPD/.test(lastVal)){
+						lastVal = lastVal.split("YZYPD")[1];
+					}
+					if(lastVal == aData[all_dimensionality[k]]){
+						dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+					}else{
+						dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+					}
+				}else{
+					dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+				}
+			}
+
+		}
+	}
+
+4.interval
+通过回调函数实现间隔显示以及过滤数据
+var len = opp.xAxis[j].data.length;
+opp.xAxis[j].axisTick.interval = function(index,value){
+	if(index % 2 == 0 && len > 10) {
+		return !/^YZYPD/.test(value)
+	}else if(len < 10){
+		return value;
+	}else{
+		return '';
+	}
+
+};
+opp.xAxis[j].axisLabel.interval = function(index,value){
+	if(index % 2 == 0 && len > 10) {
+		return !/^YZYPD/.test(value)
+	}else if(len < 10){
+		return value;
+	}else{
+		return '';
+	}
+};
+-->
