@@ -202,6 +202,75 @@ if($("."+indexClass+"").find(".right_module .content_body .lf").length > 1){
 	$("."+indexClass+"").find(".right_module .content_body div").remove(".lf:not(:first)");
 }
 
+最后解决方法:
+css:
+.new_view_table{text-align:center;}
+.lf{display: inline-block;width:200px;height:50px;margin: 0 auto;position:relative;}
+.loader{width: 27px;height: 27px;animation: loader 1000ms ease-in-out infinite;border: 5px solid #c23531;border-right-color: transparent;border-radius: 16px;box-sizing: border-box;display: inline-block;position:absolute;left:20%;top:50%;}
+.sm{color:#000;display: inline-block;position: absolute;height:27px;line-height: 27px;top:50%;left:40%;}
+.tl{display: inline-block;width:200px;height:100%;margin: 0 auto;position:relative;}
+.tl .loader,.tl .sm{top:40%;}
+@keyframes loader{0%{transform: rotate(0deg);}100%{transform: rotate(360deg);}}
+
+js:
+state_table.js:
+
+$("."+indexClass+"").find(".right_module .content_body").append("<div class=lf><div class=loader></div><div class=sm>数据获取中</div></div>");
+if($(".lf").css("display") == 'block'){
+	$("new_view_main").css("opacity","0.8");
+}
+if($("."+indexClass+"").find(".right_module .content_body .lf").length > 1){
+	$("."+indexClass+"").find(".right_module .content_body div").remove(".lf:not(:first)");
+}
+$("div").remove(".lf");
+
+
+$("."+storeClass+"").append("<div class=tl><div class=loader></div><div class=sm>数据获取中</div></div>");
+if($(".tl").css("display") == 'block'){
+	$("."+storeClass+"").css("opacity","0.8");
+}
+if($("."+storeClass+"").find(".tl").length > 1){
+	$("."+storeClass+"").find("div").remove(".tl:not(:first)");
+}
+$("."+storeClass+"").find("div").remove(".tl");
+
+
+state_pre_dataHandle.js:
+
+$.ajax({
+	url:"/cloudapi/v1/tables/" +statements_current_cube_name+"/data",
+	type:"post",
+	dataType:"json",
+	contentType: "application/json; charset=utf-8",
+	async: true,
+	data:JSON.stringify(handleDataPost),
+	beforeSend:function(){
+//			console.log("startSend");
+		if($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li .new_view_main").hasClass("new_view_indexPage")){
+				$("."+indexClass+"").find(".right_module .content_body .lf").show();
+		}
+		if($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li .new_view_main").hasClass("new_view_table")){
+				$("."+storeClass+"").find(".tl").show();
+			}
+	},
+	success:function(data){
+		if(data.status == "success"){
+			if($("."+indexClass+"").find(".right_module .content_body .session_data_list_for_body .measureDiv").find("p").html() != '' || $("."+indexClass+"").find(".right_module .content_body .session_data_list_for_body .measureDiv").find("span").html() != ''){
+				$("."+indexClass+"").find(".right_module .content_body .lf").hide();
+			}
+			if($("."+storeClass+"").find(".edit_table .left_row_container table tr td").html() != ''){
+				$("."+storeClass+"").find(".tl").hide();
+			}
+
+			reporting_preAllData = data.results.data;
+			reporting_recordConditon = objectDeepCopy(handleDataPost);
+			handleSuccessFunction(data.results.data);
+			clickDrill = true;
+		}
+	}
+});
+
+
 10.mousedown和mouseup情况下添加加载动画?顺序问题或者位置问题.
 未解决
 -->
