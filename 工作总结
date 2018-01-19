@@ -145,6 +145,7 @@ opp.xAxis[j].axisLabel.interval = function(index,value){
 		}
 	}
 2.多轴条形图怎样根据y轴上的刻度名的长度调节轴与轴之间的距离？
+未解决
 3.条形图类目轴分组加边线(分组合并)显示清晰？
 4.饼图的引导线怎么去掉？
 解决:labelLine在label的position设置为'outside'时通过视觉引导线连接到扇区.
@@ -152,7 +153,58 @@ opp.xAxis[j].axisLabel.interval = function(index,value){
 暂未解决
 6.如果ｘ轴或者y轴的name长度较长，在显示的时候部分显示不到，设置nameRotate后要倾斜比较平才能显示完整，但是这种情况下，如果有多个轴，name又会重叠，请问有什么好的解决方法？
 暂时不显示name.
-7.关系图dataIndex undefined报错问题？ -->
+7.关系图dataIndex undefined报错问题？ 
+已解决
+8.指标卡随着容器的变化永远保持居中？
+解决方法:外层text-align:center;内层text-align:left并且inline-block；
+.new_view_indexPage{font-size: 12px;position: absolute;left: 0;top: 0;height: 100%;width:100%;display: none;}
+.new_view_indexPage .right_module{background: white;}
+.new_view_indexPage .right_module .content_body{text-align:center;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body{width: auto !important;position: static !important;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv{text-align: left;display: inline-block;max-width:100%;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .cardInfo{padding:16px;background-color:rgba(255,255,255,0.8);box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0;position: absolute;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .p0{font-weight: bold;font-size:20px;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .sp0{color:#202020;font-size:70px;display: inline-block;margin-top: 10px;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .p1{color:#505050;font-size:20px;margin-top:10px;display: inline-block;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .sp1{color:red;font-size:20px;margin-left:20px;display: inline-block;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .compareP{font-size:12px;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .linkP{font-size:12px;}
+９．echarts自带的showloading和spin.js的loading效果怎么可以一致?将echarts的loading效果全部换成spin.js，在刷新后只有最后一个有加载动画.
+解决方法:
+将指标卡的spin.js转换成css3动画.
+css:
+.lf{display: inline-block;width:100%;height:50px;text-align:center;margin: 0 auto;position:relative;}
+.loader{
+	width: 27px;
+    height: 27px;
+    animation: loader 1000ms ease-in-out infinite;
+    border: 5px solid #c23531;
+    border-right-color: transparent;
+    border-radius: 16px;
+    box-sizing: border-box;
+    display: inline-block;
+    position:absolute;
+    left:44%;
+    top:50%;
+}
+.sm{color:#000;display: inline-block;position: absolute;height:27px;line-height: 27px;left:51%;top:50%;}
+@keyframes loader{
+	0%{transform: rotate(0deg);}
+	100%{transform: rotate(360deg);}
+}
+js:
+$("."+indexClass+"").find(".right_module .content_body").append("<div class=lf><div class=loader></div><div class=sm>数据获取中</div></div>");
+if($(".lf").css("display") == 'block'){
+	$("new_view_main").css("opacity","0.8");
+}
+//解决叠加效果
+if($("."+indexClass+"").find(".right_module .content_body .lf").length > 1){
+	$("."+indexClass+"").find(".right_module .content_body div").remove(".lf:not(:first)");
+}
+
+10.mousedown和mouseup情况下添加加载动画?顺序问题或者位置问题.
+未解决
+-->
 
 
 <!-- 
@@ -286,7 +338,60 @@ $.ajax({
 4.unbind和bind配合使用:避免重复绑定使得同一个操作被执行多次.
 5.sessionStorage和localStorage:
 sessionStorage:本地存储一个会话中的数据，只有在同一个会话中的页面才能访问，当会话结束后数据随之销毁。不是持久化的本地存储,仅仅是会话级别的存储.
-localStorage:用于持久化本地存储，除非主动删除数据,否则永远不会过期.
+localStorage:用于持久化本地存储，除非主动删除数据,否则永远不会过期.只支持string类型的存储.
+
+<script>
+	if(!window.localStorage){
+		alert("浏览器支持");
+	}else{
+		var storage = window.localStorage;
+		storage["a"] = 1;
+		storage.b = 1;
+		storage.setItem("c",3);
+		console.log(storage.a);   //1
+		console.log(storage.b);   //1
+		console.log(storage.c);   //3
+		storage.a = 4;
+		console.log(storage.a);   //4
+
+		storage.clear();       //清除所有内容
+		console.log(storage);      //Storage {length: 0}
+
+		storage.a = 1;
+		storage.setItem("c",3);
+		console.log(storage);       //Storage {a: "1", c: "3", length: 2}
+		storage.removeItem("a");
+		console.log(storage.a);         //undefined
+
+		console.log(storage.getItem("c"));  //3
+
+		//获取键
+		storage.a = 3;
+		storage.setItem("v",2);
+		for(var i=0;i<storage.length;i++){
+			var key = storage.key(i);
+			console.log(key);            // a c v
+		}
+
+		//将json存入localstorage中，自动将localstorage转换成字符串形式.
+		//JSON.stringify():将JSON转换成字符串
+		//JSON.parse():将字符串转换成对象
+		var data = {
+			name:'tt',
+			sex:'woman',
+			age:'22'
+		};
+		var str = JSON.stringify(data);
+		storage.setItem("data",str);
+		console.log(storage.data);
+		//{"name":"tt","sex":"woman","age":"22"}
+		var json = storage.getItem('data');
+		var jsonObj = JSON.parse(json);
+		console.log(jsonObj,typeof jsonObj);
+		//{name: "tt", sex: "woman", age: "22"}  "object"
+	} 
+</script>
+
 6.this.$el.html():
 $el:指的是选中的真正的dom元素，而$()选择的是一个元素组，需要.get(0)或者[0]才能获取到真正的dom.
 get:取得其中一个匹配的元素，$(this).get(0) <==> $(this)[0];
@@ -335,4 +440,71 @@ indexOf:没有返回-1
 12.toFixed:
  toFixed它是一个四舍六入五成双的诡异的方法，"四舍六入五成双"含义：对于位数很多的近似数，当有效位数确定后，其后面多余的数字应该舍去，只保留有效数字最末一位，这种修约（舍入）规则是“四舍六入五成双”，也即“4舍6入5凑偶”这里“四”是指≤4 时舍去，"六"是指≥6时进上，"五"指的是根据5后面的数字来定，当5后有数时，舍5入1；当5后无有效数字时，需要分两种情况来讲：①5前为奇数，舍5入1；②5前为偶数，舍5不进。（0是偶数）
 
+
+13.data:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>data</title>
+</head>
+<body>
+	<button id="btn1">存储数据</button>
+	<button id="btn2">获取数据</button>
+	<div></div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+<script>
+	$("#btn1").click(function(){
+		$("div").data("save","saveData");
+	})
+	$("#btn2").click(function(){
+		alert($("div").data("save"));
+	})
+</script>
+</html> 
+
+
+14.prop && attr 
+
+prop:固有属性使用,本身带有的属性；
+attr:自定义属性使用，自定义的属性；
+
+
+15.深拷贝 && 浅复制
+
+浅复制:复制引用，复制后的引用指向同一个对象的实例，彼此间操作相互影响.
+深拷贝:在堆中重新分配内存,将源对象的实例的属性都进行复制，复制的对象与原对象完全隔离.
+	
+
+16.overflow:
+overflow:auto  在需要的时候出现滚动条
+overflow:scroll 水平垂直均加滚动条
+
+eg:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>滚动条</title>
+	<style>
+		#wrap{
+			width:100px;
+			height:200px;
+			overflow:auto;
+			/*overflow-y:auto;*/
+			border:1px solid;
+		}
+		#con{
+			width:100%;
+			font-size:20px;
+		}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="con">HELLOW DFAJL农夫的时间发动机哦点击发送的环境微弱ｖｊｎｖHELLOW DFAJL农夫的时间发动机哦点击发送的环境微弱ｖｊｎｖ</div>
+	</div>
+</body>
+</html> 
 -->
