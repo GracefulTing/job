@@ -577,3 +577,137 @@ eg:
 </body>
 </html> 
 -->
+
+<!-- 移动端适配 -->
+<!-- 
+	Ubuntu:
+		sudo apt-get install ruby
+		sudo apt install ruby-sass
+		sudo gem install sass
+	建立文件夹，index.html style.scss
+	1.cd 文件夹
+	2.编写样式，即sass文件，sass --style compressed style.scss style.css,自动生成css文件
+	３.监听:sass --watch style.scss:style.css 
+-->
+<!-- Rem -->
+<!-- 
+	根据html的font-size为基准进行设置.
+	html{
+		font-size:20px;
+	}
+	.a{
+		width:20rem;    //相当于400px
+		height:10rem;　　//相当于200px
+	}
+-->
+<!-- 弹性布局 -->
+<!-- 
+	容器：需要加flex/inline-flex的父元素.flex:块级元素，inline-flex:行级元素.
+	项目:弹性布局容器中的子元素。
+	设置为flex后，子元素float,clear,vertical-align都失效，position有效.
+	flex-direction:
+		row:水平，起点在左边
+		row-reverse:水平，起点在右边
+		column:垂直，起点在上面
+		column-reverse:垂直，起点在下面
+	justify-content:
+		flex-start:位于主轴起点
+		flex-end:位于主轴终点
+		center:居中
+		space-between:两端对齐，间隔相等
+		space-around:间隔相等
+	align-items:
+		flex-start:交叉轴起点对齐
+		flex-end:交叉轴终点对齐
+		center:交叉轴中点对齐
+		baseline:第一行基线对齐
+		stretch:未设置高度或者auto，将占满高度.
+
+-->
+<!-- hotcss -->
+<!-- 
+	1.新建index.html,在head引入style.css,然后引入hotcss.js;
+	2.新建px2rem.scss;
+		@function px2rem( $px ){
+			@return $px*320/$designWidth/20 + rem;
+		}
+	3.在style.scss中写样式，让其转换成style.css;
+	4.终端:
+	sass --style compressed style.scss style.css
+	sass --watch style.scss:style.css 
+-->
+<!-- deviceWidth = document.documentElement.clientWidth; -->
+
+
+
+
+1.抖动
+	定时器抖抖停
+	created:function(){
+		this.test = setInterval(this.timer,1000);
+	},
+	methods:{
+		timer(){
+				this.isClass = true;
+			    this.count++;
+			    this.isClass1 = true;
+			    this.isClass2 = true;
+			    this.t += 100;
+			    if (this.t % 3 == 0) {
+			        this.isClass = false;
+			   	}
+			},
+	}
+
+	enter时的动画和抖动转换:
+    <div class="content" :class="[count > 1 ? {shakeCir:isClass}: animate]">
+2.爆炸
+	定位裂缝和碎片图片,通过延迟和动画效果实现.
+3.canvas画画
+	canvas引入背景图片然后作画
+	 <!-- 心形区域 -->
+        <div class="heart animated zoomIn delay3" id="cir">
+            <img src="/static/images/images1/ENTER2.png" alt="" class="enter" onclick="return false">
+            <canvas id="canvas"></canvas>
+            <p id="draw">画下关于你的MR.RIGHT</p>
+        </div>
+
+        mounted(){
+        var cir = document.getElementById("cir");
+        var draw = document.getElementById("draw");
+  		  var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+
+        //给定canvas宽高
+        var inforClientWidth = document.documentElement.clientWidth; 
+        var inforClientHeight = document.documentElement.clientHeight;
+  
+        canvas.width = Math.floor(inforClientWidth*461/750*window.devicePixelRatio);
+        canvas.height = Math.floor(inforClientHeight*398/1334*window.devicePixelRatio);
+        var ctrl = this;
+        ctx.lineWidth = 1*window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
+        canvas.addEventListener('touchstart',function(event){   //触摸点按下事件
+            event.preventDefault();
+            draw.style.display = "none";
+            if (event.targetTouches.length == 1) {
+                var touch = event.targetTouches[0];
+                ctx.beginPath();
+                ctx.moveTo(touch.clientX-canvas.getBoundingClientRect().left,touch.clientY-canvas.getBoundingClientRect().top);
+                canvas.addEventListener('touchmove',function (event) {  //手机拖动触摸点事件
+                    
+                    var touche = event.targetTouches[0];
+                    ctx.lineTo(touche.clientX - canvas.getBoundingClientRect().left, touche.clientY - canvas.getBoundingClientRect().top);
+                    ctx.stroke();
+                },false)
+                canvas.addEventListener('touchend',function (event) {  //手机离开屏幕的事件
+                    ctx.closePath();
+                },false)
+            }
+        },false)
+    },
+    methods:{
+        finish:function(){
+            this.$router.push({name: 'aboutShow',params:{aboutSrc:canvas.toDataURL("image/png")}});
+        } 
+    }
