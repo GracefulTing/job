@@ -1,3 +1,7 @@
+git pull;
+pull or build image;
+sudo rm -rf myvol/   删除表
+
 测试网址：
 http://127.0.0.1:8000/pallasdata
 
