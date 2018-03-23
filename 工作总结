@@ -711,3 +711,46 @@ eg:
             this.$router.push({name: 'aboutShow',params:{aboutSrc:canvas.toDataURL("image/png")}});
         } 
     }
+
+
+1.垂直居中:
+top:（大高度-自身高度）/ 2
+$("#foldSideBtn").css("top",($("#analysisContainer .leftSlide").height() - $("#foldSlideBtn").height()) / 2 + "px");
+
+居中:
+top: ($("body").outerHeight() - $("#filter-model #user-filter-select").outerHeight()) / 2,
+left: ($("body").outerWidth() - $("#filter-model #user-filter-select").outerWidth()) / 2,
+
+measureDiv.css({"marginLeft":$("#view_show_wrap").actual("width")/2-measureDiv.actual("width")/2+'px',"marginTop":$("#view_show_wrap").actual("height")/2-measureDiv.actual("height")/2+'px'})
+
+
+2.document.body.offsetHeight:
+document.offsetHeight | document.body.offsetHeight:兼容写法，高度包括垂直内边距和边框
+可用于动态赋值高度:
+$("#analysisContainer .leftSlide").css("height",(document.offsetHeight | document.body.offsetHeight) - 50 + "px");
+
+body{
+	height:1000px;
+	padding:20px;
+	background: pink;
+	border:10px solid;
+}
+console.log(document.offsetHeight | document.body.offsetHeight);  //1060
+console.log(document.body.offsetHeight);     //1060
+console.log($("body").height());   //1000
+
+3.toggle():切换元素的可见状态.可见即隐藏，隐藏即显示.
+
+4.:visible----匹配所有可见元素.
+<div id="box">
+	<p style="display: none;">1</p>
+	<p>2</p>
+	<p>3</p>
+</div>
+$("#box p:visible");     // 2 3
+console.log($("#box > p:first").is(":visible"));   //false
+
+5.outerHeight():外部高度,包含padding和border.
+  outerWidth():外部宽度,包含padding和border.
+
+6.clone():克隆匹配的dom元素.
